@@ -1,0 +1,161 @@
+{
+  "player": {
+    "name": "ltbrain",
+    "drachmas": 95,
+    "fleet": 3,
+    "crew": 10,
+    "inventory": {
+      "wheat": 1
+    },
+    "supplies": {
+      "food": 20,
+      "water": 20
+    },
+    "currentPort": "Athens"
+  },
+  "ports": [
+    {
+      "name": "Athens",
+      "goods": {
+        "wheat": 5,
+        "oliveOil": 10,
+        "wine": 8,
+        "pottery": 6
+      },
+      "prices": {
+        "wheat": 5,
+        "oliveOil": 10,
+        "wine": 8,
+        "pottery": 6
+      },
+      "npcs": [
+        "Sophia the Merchant",
+        "Nikolas the Philosopher"
+      ],
+      "uniqueLocations": [
+        "Agora",
+        "Temple of Athena"
+      ]
+    },
+    {
+      "name": "Carthage",
+      "goods": {
+        "spices": 15,
+        "textiles": 12,
+        "metals": 20
+      },
+      "prices": {
+        "spices": 15,
+        "textiles": 12,
+        "metals": 20
+      },
+      "npcs": [
+        "Hanno the Navigator"
+      ],
+      "uniqueLocations": [
+        "Bazaar",
+        "Harbor"
+      ]
+    },
+    {
+      "name": "Alexandria",
+      "goods": {
+        "wheat": 7,
+        "oliveOil": 9,
+        "spices": 18
+      },
+      "prices": {
+        "wheat": 7,
+        "oliveOil": 9,
+        "spices": 18
+      },
+      "npcs": [
+        "Cleon the Scholar"
+      ],
+      "uniqueLocations": [
+        "Library",
+        "Lighthouse"
+      ]
+    },
+    {
+      "name": "Tyre",
+      "goods": {
+        "textiles": 14,
+        "pottery": 6,
+        "wine": 10
+      },
+      "prices": {
+        "textiles": 14,
+        "pottery": 6,
+        "wine": 10
+      },
+      "npcs": [
+        "Phoenicia the Trader"
+      ],
+      "uniqueLocations": [
+        "Dye Works",
+        "Market Square"
+      ]
+    },
+    {
+      "name": "Rhodes",
+      "goods": {
+        "metals": 17,
+        "oliveOil": 11,
+        "wine": 9
+      },
+      "prices": {
+        "metals": 17,
+        "oliveOil": 11,
+        "wine": 9
+      },
+      "npcs": [
+        "Artemis the Shipwright"
+      ],
+      "uniqueLocations": [
+        "Shipyard",
+        "Colossus Viewpoint"
+      ]
+    },
+    {
+      "name": "Syracuse",
+      "goods": {
+        "pottery": 5,
+        "wheat": 6,
+        "oliveOil": 8
+      },
+      "prices": {
+        "pottery": 5,
+        "wheat": 6,
+        "oliveOil": 8
+      },
+      "npcs": [
+        "Dionysius the Guard"
+      ],
+      "uniqueLocations": [
+        "Fortress",
+        "Dock"
+      ]
+    },
+    {
+      "name": "Knossos",
+      "goods": {
+        "oliveOil": 10,
+        "wine": 7,
+        "spices": 16
+      },
+      "prices": {
+        "oliveOil": 10,
+        "wine": 7,
+        "spices": 16
+      },
+      "npcs": [
+        "Minos the Captain"
+      ],
+      "uniqueLocations": [
+        "Palace",
+        "Marketplace"
+      ]
+    }
+  ]
+}

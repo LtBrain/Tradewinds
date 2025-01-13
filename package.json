@@ -1,0 +1,19 @@
+{
+  "name": "tradewinds",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@clack/prompts": "^0.9.1",
+    "@yao-pkg/pkg": "^6.2.0",
+    "chalk": "^5.4.1",
+    "pkg": "^5.8.1"
+  }
+}
