@@ -14,11 +14,11 @@ let ports = [
       {
         name: 'Sophia the Merchant',
         quote:
-          '“The measure of a person’s character is what they do with power.” - Abraham Lincoln (adapted)',
+          '“They share stories of adventures and exploration.',
       },
       {
         name: 'Nikolas the Philosopher',
-        quote: '“Be kind, for everyone you meet is fighting a hard battle.” - Plato (adapted)',
+        quote: '“They share stories of adventures and exploration.',
       },
     ],
     uniqueLocations: [
@@ -326,7 +326,7 @@ async function displayBackstory(backstory) {
 
 //extremely unstable switchcase, port to better logic later
 async function mainMenu() {
-  updateSeasonalPrices(); 
+  updateSeasonalPrices();
   displaySeason();
   const action = await multiselect({
     message: 'Choose your actions:',
@@ -339,6 +339,7 @@ async function mainMenu() {
       { value: 'inventory', label: 'Check Inventory' },
       { value: 'pray', label: 'Pray to the gods' },
       { value: 'save', label: 'Save Game' },
+      { value: 'borrow', label: 'Borrow Money' }, // Added borrow option
     ],
     required: true,
   });
@@ -355,9 +356,6 @@ async function mainMenu() {
           case 'marketplace':
             await visitMarketplace();
             break;
-          case 'locations':
-            await exploreLocations();
-            break;
           case 'manage':
             await manageCrew();
             break;
@@ -366,6 +364,9 @@ async function mainMenu() {
             break;
           case 'pray':
             await prayToGods();
+            break;
+          case 'borrow':
+            await borrowMoney();
             break;
           case 'save':
             saveGame();
@@ -479,6 +480,42 @@ async function exploreLocations() {
   });
 
   await text({ message: 'Press enter to return to the main menu.' });
+}
+
+async function borrowMoney() {
+  const port = ports.find((p) => p.name === player.currentPort);
+  if (port && port.investors && port.investors.length > 0) {
+    port.investors.forEach((investor, index) => {
+      console.log(
+        `${index + 1}. ${investor.name} offers a loan of ${investor.loanAmount} drachmas with ${Math.floor(
+          investor.interestRate * 100
+        )}% interest.`
+      );
+    });
+
+    const investorChoice = await text({
+      message: 'Which investor would you like to borrow from? (Enter number or "back"):',
+    });
+
+    if (investorChoice !== 'back') {
+      const investorIndex = parseInt(investorChoice) - 1;
+      if (investorIndex >= 0 && investorIndex < port.investors.length) {
+        const investor = port.investors[investorIndex];
+        player.drachmas += investor.loanAmount;
+        player.loans.push({
+          investor: investor.name,
+          amount: investor.loanAmount,
+          interestRate: investor.interestRate,
+        });
+        console.log(`You received a loan of ${investor.loanAmount} drachmas from ${investor.name}.`);
+      } else {
+        console.log(chalk.red('Invalid investor choice.'));
+      }
+    }
+  } else {
+    console.log(chalk.red('No investors available at this port.'));
+  }
+  await text({ message: 'Press Enter to continue' });
 }
 
 //widely inaccurate, DISTANCES NEED REWORK AND SWITCH TO COORDINATE PLANE SYSTEM
