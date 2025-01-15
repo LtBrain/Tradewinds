@@ -1,4 +1,4 @@
-**TRADEWINDS**
+# TRADEWINDS
 
 Tradewinds is a trading game based on the historically sea-faring Ancient Greeks. This is a fully CLI based game utilizing Node.js and Clack.js.
 
