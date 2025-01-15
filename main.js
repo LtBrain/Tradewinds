@@ -1,57 +1,82 @@
+//imports
 import { intro, outro, select, text, spinner, multiselect } from '@clack/prompts';
 import chalk from 'chalk';
 import fs from 'fs';
+import { stdin} from 'process';
+import { exit } from 'process';
+
 
 // Game State aka PORT DATA
 let ports = [
   {
     name: 'Athens',
-    goods: { wheat: 5, OliveOil: 10, wine: 8, pottery: 6 },
-    prices: { wheat: 5, OliveOil: 10, wine: 8, pottery: 6 },
+    goods: { Wheat: 5, 'Olive Oil': 10, Wine: 8, Pottery: 6, Food: 2, Water: 1 },
+    prices: { Wheat: 5, 'Olive Oil': 10, Wine: 8, Pottery: 6, Food: 2, Water: 1 },
     npcs: ['Sophia the Merchant', 'Nikolas the Philosopher'],
-    uniqueLocations: ['Agora', 'Temple of Athena'],
+    uniqueLocations: [
+      { name: 'Agora', description: 'The bustling marketplace of Athens, the heart of Athenian trade and commerce.' },
+      { name: 'Temple of Athena', description: 'The magnificent Temple of Athena, where offerings are made and fortunes can be told.' },
+    ],
   },
   {
     name: 'Carthage',
-    goods: { spices: 15, textiles: 12, metals: 20 },
-    prices: { spices: 15, textiles: 12, metals: 20 },
+    goods: { Spices: 15, Textiles: 12, Metals: 20, Food: 2, Water: 1 },
+    prices: { Spices: 15, Textiles: 12, Metals: 20, Food: 2, Water: 1 },
     npcs: ['Hanno the Navigator'],
-    uniqueLocations: ['Bazaar', 'Harbor'],
+    uniqueLocations: [
+      { name: 'Bazaar', description: 'A vibrant marketplace filled with exotic goods from across the Mediterranean.' },
+      { name: 'Harbor', description: 'The bustling harbor of Carthage, where ships arrive and depart daily.' },
+    ],
   },
   {
     name: 'Alexandria',
-    goods: { wheat: 7, OliveOil: 9, spices: 18 },
-    prices: { wheat: 7, OliveOil: 9, spices: 18 },
+    goods: { Wheat: 7, 'Olive Oil': 9, Spices: 18, Food: 2, Water: 1 },
+    prices: { Wheat: 7, 'Olive Oil': 9, Spices: 18, Food: 2, Water: 1 },
     npcs: ['Cleon the Scholar'],
-    uniqueLocations: ['Library', 'Lighthouse'],
+    uniqueLocations: [
+      { name: 'Library', description: 'The legendary Library of Alexandria, where knowledge is power.' },
+      { name: 'Lighthouse', description: 'The towering Lighthouse of Alexandria, guiding ships safely to port.' },
+    ],
   },
   {
     name: 'Tyre',
-    goods: { textiles: 14, pottery: 6, wine: 10 },
-    prices: { textiles: 14, pottery: 6, wine: 10 },
+    goods: { Textiles: 14, Pottery: 6, Wine: 10, Food: 2, Water: 1 },
+    prices: { Textiles: 14, Pottery: 6, Wine: 10, Food: 2, Water: 1 },
     npcs: ['Phoenicia the Trader'],
-    uniqueLocations: ['Dye Works', 'Market Square'],
+    uniqueLocations: [
+      { name: 'Dye Works', description: 'The vibrant dye works of Tyre, producing the finest purple dye in the known world.' },
+      { name: 'Market Square', description: 'A large open-air market filled with the sounds and smells of Tyre.' },
+    ],
   },
   {
     name: 'Rhodes',
-    goods: { metals: 17, OliveOil: 11, wine: 9 },
-    prices: { metals: 17, OliveOil: 11, wine: 9 },
+    goods: { Metals: 17, 'Olive Oil': 11, Wine: 9, Food: 2, Water: 1 },
+    prices: { Metals: 17, 'Olive Oil': 11, Wine: 9, Food: 2, Water: 1 },
     npcs: ['Artemis the Shipwright'],
-    uniqueLocations: ['Shipyard', 'Colossus Viewpoint'],
+    uniqueLocations: [
+      { name: 'Shipyard', description: 'The busy shipyard of Rhodes, home to skilled shipwrights and the latest in shipbuilding technology.' },
+      { name: 'Colossus Viewpoint', description: 'A breathtaking viewpoint offering stunning views of the Colossus of Rhodes.' },
+    ],
   },
   {
     name: 'Syracuse',
-    goods: { pottery: 5, wheat: 6, OliveOil: 8 },
-    prices: { pottery: 5, wheat: 6, OliveOil: 8 },
+    goods: { Pottery: 5, Wheat: 6, 'Olive Oil': 8, Food: 2, Water: 1 },
+    prices: { Pottery: 5, Wheat: 6, 'Olive Oil': 8, Food: 2, Water: 1 },
     npcs: ['Dionysius the Guard'],
-    uniqueLocations: ['Fortress', 'Dock'],
+    uniqueLocations: [
+      { name: 'Fortress', description: 'A mighty fortress overlooking the city of Syracuse, offering a glimpse into its military might.' },
+      { name: 'Dock', description: 'The docks of Syracuse, a hive of activity where ships come and go.' },
+    ],
   },
   {
     name: 'Knossos',
-    goods: { OliveOil: 10, wine: 7, spices: 16 },
-    prices: { OliveOil: 10, wine: 7, spices: 16 },
+    goods: { 'Olive Oil': 10, Wine: 7, Spices: 16, Food: 2, Water: 1 },
+    prices: { 'Olive Oil': 10, Wine: 7, Spices: 16, Food: 2, Water: 1 },
     npcs: ['Minos the Captain'],
-    uniqueLocations: ['Palace', 'Marketplace'],
+    uniqueLocations: [
+      { name: 'Palace', description: 'The magnificent Palace of Knossos, a testament to Minoan civilization and power.' },
+      { name: 'Marketplace', description: 'The sprawling marketplace of Knossos, where traders from across Crete gather.' },
+    ],
   },
 ];
 
@@ -70,55 +95,54 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 //linear function for now
 function calculateSupplyConsumption(distance) {
-    const foodConsumptionMultiplier = 0.5;
-    const waterConsumptionMultiplier = 1;
-    const foodConsumed = Math.max(0, Math.floor(distance * foodConsumptionMultiplier));
-    const waterConsumed = Math.max(0, Math.floor(distance * waterConsumptionMultiplier));
-    return { foodConsumed, waterConsumed };
-  }
+  const foodConsumptionMultiplier = 0.5;
+  const waterConsumptionMultiplier = 1;
+  const foodConsumed = Math.max(0, Math.floor(distance * foodConsumptionMultiplier));
+  const waterConsumed = Math.max(0, Math.floor(distance * waterConsumptionMultiplier));
+  return { foodConsumed, waterConsumed };
+}
 
-  //WORK IN PROGRESS
-  function saveGame() {
-    const gameState = { player, ports };
-    const gameStateJson = JSON.stringify(gameState, null, 2);
-    fs.writeFileSync('savegame.json', gameStateJson);
-    console.log(chalk.green('Game saved successfully!'));
-  }
-  
-  //very very sketchy, do not change
-  function loadGame() {
-    if (fs.existsSync('savegame.json')) {
-      const gameStateJson = fs.readFileSync('savegame.json', 'utf-8');
-      const gameState = JSON.parse(gameStateJson);
-      player = gameState.player;
-      ports = gameState.ports;
-      console.log(chalk.green('Game loaded successfully!'));
-    } else {
-      console.log(chalk.yellow('No save file found.'));
-    }
-  }
-  
+//WORK IN PROGRESS
+function saveGame() {
+  const gameState = { player, ports };
+  const gameStateJson = JSON.stringify(gameState, null, 2);
+  fs.writeFileSync('savegame.json', gameStateJson);
+  console.log(chalk.green('Game saved successfully!'));
+}
 
-  //landing page logic
-  async function startGame() {
-    const loadOption = await select({
-      message: 'Do you want to load a saved game?',
-      options: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }],
-    });
-  
-    if (loadOption === 'yes') {
-      loadGame();
-      if (player.name) { // Check if player name is loaded
-        intro(chalk.green(`Welcome back, ${player.name}!`));
-        await mainMenu();
-      } else {
-        console.log(chalk.red("Error loading game. Starting a new game."));
-        await newGame();
-      }
+//very very sketchy, do not change
+function loadGame() {
+  if (fs.existsSync('savegame.json')) {
+    const gameStateJson = fs.readFileSync('savegame.json', 'utf-8');
+    const gameState = JSON.parse(gameStateJson);
+    player = gameState.player;
+    ports = gameState.ports;
+    console.log(chalk.green('Game loaded successfully!'));
+  } else {
+    console.log(chalk.yellow('No save file found.'));
+  }
+}
+
+//landing page logic
+async function startGame() {
+  const loadOption = await select({
+    message: 'Do you want to load a saved game?',
+    options: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }],
+  });
+
+  if (loadOption === 'yes') {
+    loadGame();
+    if (player.name) { 
+      intro(chalk.green(`Welcome back, ${player.name}!`));
+      await mainMenu();
     } else {
+      console.log(chalk.red("Error loading game. Starting a new game."));
       await newGame();
     }
+  } else {
+    await newGame();
   }
+}
 
 async function newGame() {
   intro(chalk.green('Welcome to Tradewinds!'));
@@ -195,20 +219,16 @@ async function tradeGoods() {
     options: [{ value: 'buy', label: 'Buy' }, { value: 'sell', label: 'Sell' }],
   });
 
-  const goodToTrade = await select({
-    message: 'What good would you like to trade?',
-    options: Object.keys(port.goods).map((good) => ({ value: good, label: good })),
-  });
-
-  const amount = await text({
-    message: `How much ${goodToTrade} do you want to ${buyOrSell}?`,
-    validate: (value) =>
-      isNaN(value) || value <= 0 ? 'Please enter a valid amount.' : undefined,
-  });
-
-  const cost = port.prices[goodToTrade] * amount;
-
   if (buyOrSell === 'buy') {
+    const goodToTrade = await select({
+      message: 'What good would you like to buy?',
+      options: Object.keys(port.goods).map((good) => ({ value: good, label: good })),
+    });
+    const amount = await text({
+      message: `How much ${goodToTrade} do you want to buy?`,
+      validate: (value) => isNaN(value) || value <= 0 ? 'Please enter a valid amount.' : undefined,
+    });
+    const cost = port.prices[goodToTrade] * amount;
     if (player.drachmas >= cost) {
       player.drachmas -= cost;
       player.inventory[goodToTrade] = (player.inventory[goodToTrade] || 0) + parseInt(amount);
@@ -217,7 +237,16 @@ async function tradeGoods() {
       outro(chalk.red('You do not have enough drachmas.'));
     }
   } else { 
+    const goodToTrade = await select({
+      message: 'What good would you like to sell?',
+      options: Object.keys(player.inventory).map((good) => ({ value: good, label: good })),
+    });
+    const amount = await text({
+      message: `How much ${goodToTrade} do you want to sell?`,
+      validate: (value) => isNaN(value) || value <= 0 ? 'Please enter a valid amount.' : undefined,
+    });
     if (player.inventory[goodToTrade] >= amount) {
+      const cost = port.prices[goodToTrade] * amount;
       player.drachmas += cost;
       player.inventory[goodToTrade] -= parseInt(amount);
       outro(`You sold ${amount} ${goodToTrade} for ${cost} drachmas.`);
@@ -258,7 +287,7 @@ async function exploreLocations() {
   const port = ports.find((p) => p.name === player.currentPort);
   console.log(chalk.green(`You explore the unique locations in ${port.name}:`));
   port.uniqueLocations.forEach((location, index) => {
-    console.log(`${index + 1}. ${location}`);
+    console.log(`${index + 1}. ${location.name}: ${location.description}`);
   });
 
   await text({ message: 'Press enter to return to the main menu.' });
@@ -266,14 +295,14 @@ async function exploreLocations() {
 
 //widely inaccurate, DISTANCES NEED REWORK AND SWITCH TO COORDINATE PLANE SYSTEM
 const distanceMatrix = {
-    Athens: { Carthage: 20, Alexandria: 15, Tyre: 12, Rhodes: 18, Syracuse: 25, Knossos: 10 },
-    Carthage: { Athens: 20, Alexandria: 22, Tyre: 8, Rhodes: 25, Syracuse: 12, Knossos: 30 },
-    Alexandria: { Athens: 15, Carthage: 22, Tyre: 15, Rhodes: 20, Syracuse: 28, Knossos: 25 },
-    Tyre: { Athens: 12, Carthage: 8, Alexandria: 15, Rhodes: 10, Syracuse: 18, Knossos: 22 },
-    Rhodes: { Athens: 18, Carthage: 25, Alexandria: 20, Tyre: 10, Syracuse: 22, Knossos: 28 },
-    Syracuse: { Athens: 25, Carthage: 12, Alexandria: 28, Tyre: 18, Rhodes: 22, Knossos: 35 },
-    Knossos: { Athens: 10, Carthage: 30, Alexandria: 25, Tyre: 22, Rhodes: 28, Syracuse: 35 },
-  };
+  Athens: { Carthage: 15, Alexandria: 11, Tyre: 9, Rhodes: 13, Syracuse: 18, Knossos: 7 },
+  Carthage: { Athens: 15, Alexandria: 16, Tyre: 6, Rhodes: 18, Syracuse: 9, Knossos: 22 },
+  Alexandria: { Athens: 11, Carthage: 16, Tyre: 11, Rhodes: 15, Syracuse: 21, Knossos: 18 },
+  Tyre: { Athens: 9, Carthage: 6, Alexandria: 11, Rhodes: 7, Syracuse: 13, Knossos: 16 },
+  Rhodes: { Athens: 13, Carthage: 18, Alexandria: 15, Tyre: 7, Syracuse: 16, Knossos: 21 },
+  Syracuse: { Athens: 18, Carthage: 9, Alexandria: 21, Tyre: 13, Rhodes: 16, Knossos: 26 },
+  Knossos: { Athens: 7, Carthage: 22, Alexandria: 18, Tyre: 16, Rhodes: 21, Syracuse: 26 },
+};
 
   function calculateDistance(origin, destination) {
     return distanceMatrix[origin][destination]
@@ -306,37 +335,44 @@ const distanceMatrix = {
     handleStarvation();
     travelSpinner.stop(chalk.green(`You have arrived at ${destination}.`));
 
-  handleStarvation(); //idk, remember to pull handle in other functions
+  handleStarvation(); 
 }
 
 //fix this horrendous nesting later 
 function handleStarvation() {
-    if (player.supplies.food <= 0 || player.supplies.water <= 0) {
-      const starvationEvents = [
-        'Your crew mutinies due to starvation!',
-        'Half your crew dies from starvation...',
-        'Your crew is too weak to sail further!',
-      ];
-      const event = starvationEvents[Math.floor(Math.random() * starvationEvents.length)];
-      console.log(chalk.red(`Starvation Event: ${event}`));
-  
-      if (event.includes('mutinies')) {
-        player.crew = 0;
-        console.log(chalk.red("You have been overthrown! You are now standed at sea."));
-        process.exit();
-      } else if (event.includes('Half your crew dies')) {
-        player.crew = Math.floor(player.crew / 2);
-      } else {
-        console.log(chalk.red("Game Over"));
-        process.exit();
-      }
+  const baseMutinyChance = 0.5; // Base chance of mutiny
+  const mutinyChance = Math.max(0, baseMutinyChance - (0.1 * (player.piety || 0))); // Reduce mutiny chance with piety
+
+  if (player.supplies.food <= 0 || player.supplies.water <= 0) {
+    const starvationEvents = [
+      `Your crew mutinies due to starvation! (Chance: ${mutinyChance.toFixed(2)})`,
+      'Half your crew dies from starvation...',
+      'Your crew is too weak to sail further, but you drift ashore...',
+    ];
+    const event = starvationEvents[Math.floor(Math.random() * starvationEvents.length)];
+
+    //Mutiny Chance
+    if (event.includes('mutinies') && Math.random() < mutinyChance) {
+      player.crew = 0;
+      console.log(chalk.red("You have been overthrown! You are now standed at sea."));
+      process.exit();
+    } else if (event.includes('Half your crew dies')) {
+      player.crew = Math.max(0, Math.floor(player.crew / 2));
+    } else if (event.includes('drift ashore')) {
+      console.log(chalk.yellow("You've drifted ashore, weak and depleted. Your journey continues, but you've lost some time and goods."));
+      player.drachmas -= 20;
+      player.crew -= 2;
+    } else {
+      console.log(chalk.red("Game Over"));
+      process.exit();
     }
   }
+}
 
 function handleRandomEvents() {
   const eventChance = Math.random();
 
-  if (eventChance < 0.3) {
+  if (eventChance < 0.3 - (0.2 * (player.piety || 0))) { // Incorporate piety for reduced chance
     const events = [
       'A storm damages one of your ships.',
       'Pirates raid your fleet and steal some goods.',
@@ -351,12 +387,21 @@ function handleRandomEvents() {
 }
 
 async function prayToGods() {
-  const result = Math.random();
-  if (result < 0.3) {
-    outro(chalk.red('Poseidon is displeased! A storm damages your fleet.'));
-    player.fleet -= 1;
+  if (player.supplies.food > 0) {
+    player.supplies.food--; // Consume one food unit when praying
+    player.piety = (player.piety || 0) + 1;
+    const pietyLevel = player.piety;
+    const luckModifier = 0.2 * pietyLevel;
+
+    const reducedEventChance = Math.max(0, 0.3 - luckModifier);
+
+    outro(
+      chalk.blue(
+        `You sacrificed food to the gods. They smile upon you.`
+      )
+    );
   } else {
-    outro(chalk.blue('The gods smile upon you. Safe travels ahead.'));
+    outro(chalk.red('You have nothing to offer to the gods.'));
   }
 }
 
