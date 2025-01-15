@@ -1,21 +1,41 @@
-//imports
 import { intro, outro, select, text, spinner, multiselect } from '@clack/prompts';
 import chalk from 'chalk';
 import fs from 'fs';
-import { stdin} from 'process';
+import { stdin } from 'process';
 import { exit } from 'process';
-
 
 // Game State aka PORT DATA
 let ports = [
   {
     name: 'Athens',
-    goods: { Wheat: 5, 'Olive Oil': 10, Wine: 8, Pottery: 6, Food: 2, Water: 1 },
-    prices: { Wheat: 5, 'Olive Oil': 10, Wine: 8, Pottery: 6, Food: 2, Water: 1 },
-    npcs: ['Sophia the Merchant', 'Nikolas the Philosopher'],
+    goods: { Wheat: 10, 'Olive Oil': 10, Wine: 8, Pottery: 6, Food: 2, Water: 1 },
+    prices: { Wheat: 10, 'Olive Oil': 10, Wine: 8, Pottery: 6, Food: 2, Water: 1 },
+    npcs: [
+      {
+        name: 'Sophia the Merchant',
+        quote:
+          '“The measure of a person’s character is what they do with power.” - Abraham Lincoln (adapted)',
+      },
+      {
+        name: 'Nikolas the Philosopher',
+        quote: '“Be kind, for everyone you meet is fighting a hard battle.” - Plato (adapted)',
+      },
+    ],
     uniqueLocations: [
-      { name: 'Agora', description: 'The bustling marketplace of Athens, the heart of Athenian trade and commerce.' },
-      { name: 'Temple of Athena', description: 'The magnificent Temple of Athena, where offerings are made and fortunes can be told.' },
+      {
+        name: 'Agora',
+        description:
+          'The bustling marketplace of Athens, the heart of Athenian trade and commerce.',
+      },
+      {
+        name: 'Temple of Athena',
+        description:
+          'The magnificent Temple of Athena, where offerings are made and fortunes can be told.',
+      },
+    ],
+    investors: [
+      { name: 'Damon the Wise', loanAmount: 50, interestRate: 0.1 },
+      { name: 'Kleitos the Bold', loanAmount: 100, interestRate: 0.15 },
     ],
   },
   {
@@ -24,8 +44,19 @@ let ports = [
     prices: { Spices: 15, Textiles: 12, Metals: 20, Food: 2, Water: 1 },
     npcs: ['Hanno the Navigator'],
     uniqueLocations: [
-      { name: 'Bazaar', description: 'A vibrant marketplace filled with exotic goods from across the Mediterranean.' },
-      { name: 'Harbor', description: 'The bustling harbor of Carthage, where ships arrive and depart daily.' },
+      {
+        name: 'Bazaar',
+        description:
+          'A vibrant marketplace filled with exotic goods from across the Mediterranean.',
+      },
+      {
+        name: 'Harbor',
+        description: 'The bustling harbor of Carthage, where ships arrive and depart daily.',
+      },
+    ],
+    investors: [
+      { name: 'Hamilcar Barca', loanAmount: 75, interestRate: 0.12 },
+      { name: 'Magon Barca', loanAmount: 150, interestRate: 0.18 },
     ],
   },
   {
@@ -34,8 +65,18 @@ let ports = [
     prices: { Wheat: 7, 'Olive Oil': 9, Spices: 18, Food: 2, Water: 1 },
     npcs: ['Cleon the Scholar'],
     uniqueLocations: [
-      { name: 'Library', description: 'The legendary Library of Alexandria, where knowledge is power.' },
-      { name: 'Lighthouse', description: 'The towering Lighthouse of Alexandria, guiding ships safely to port.' },
+      {
+        name: 'Library',
+        description: 'The legendary Library of Alexandria, where knowledge is power.',
+      },
+      {
+        name: 'Lighthouse',
+        description: 'The towering Lighthouse of Alexandria, guiding ships safely to port.',
+      },
+    ],
+    investors: [
+      { name: 'Sostratus of Cnidos', loanAmount: 100, interestRate: 0.15 },
+      { name: 'Philo', loanAmount: 200, interestRate: 0.20 },
     ],
   },
   {
@@ -44,8 +85,19 @@ let ports = [
     prices: { Textiles: 14, Pottery: 6, Wine: 10, Food: 2, Water: 1 },
     npcs: ['Phoenicia the Trader'],
     uniqueLocations: [
-      { name: 'Dye Works', description: 'The vibrant dye works of Tyre, producing the finest purple dye in the known world.' },
-      { name: 'Market Square', description: 'A large open-air market filled with the sounds and smells of Tyre.' },
+      {
+        name: 'Dye Works',
+        description:
+          'The vibrant dye works of Tyre, producing the finest purple dye in the known world.',
+      },
+      {
+        name: 'Market Square',
+        description: 'A large open-air market filled with the sounds and smells of Tyre.',
+      },
+    ],
+    investors: [
+      { name: "Ethbaal II", loanAmount: 80, interestRate: 0.13 },
+      { name: "Pygmalion", loanAmount: 120, interestRate: 0.17 },
     ],
   },
   {
@@ -54,8 +106,19 @@ let ports = [
     prices: { Metals: 17, 'Olive Oil': 11, Wine: 9, Food: 2, Water: 1 },
     npcs: ['Artemis the Shipwright'],
     uniqueLocations: [
-      { name: 'Shipyard', description: 'The busy shipyard of Rhodes, home to skilled shipwrights and the latest in shipbuilding technology.' },
-      { name: 'Colossus Viewpoint', description: 'A breathtaking viewpoint offering stunning views of the Colossus of Rhodes.' },
+      {
+        name: 'Shipyard',
+        description:
+          'The busy shipyard of Rhodes, home to skilled shipwrights and the latest in shipbuilding technology.',
+      },
+      {
+        name: 'Colossus Viewpoint',
+        description: 'A breathtaking viewpoint offering stunning views of the Colossus of Rhodes.',
+      },
+    ],
+    investors: [
+      { name: "Dorieus", loanAmount: 90, interestRate: 0.14 },
+      { name: "Diagoras", loanAmount: 180, interestRate: 0.19 },
     ],
   },
   {
@@ -64,8 +127,19 @@ let ports = [
     prices: { Pottery: 5, Wheat: 6, 'Olive Oil': 8, Food: 2, Water: 1 },
     npcs: ['Dionysius the Guard'],
     uniqueLocations: [
-      { name: 'Fortress', description: 'A mighty fortress overlooking the city of Syracuse, offering a glimpse into its military might.' },
-      { name: 'Dock', description: 'The docks of Syracuse, a hive of activity where ships come and go.' },
+      {
+        name: 'Fortress',
+        description:
+          'A mighty fortress overlooking the city of Syracuse, offering a glimpse into its military might.',
+      },
+      {
+        name: 'Dock',
+        description: 'The docks of Syracuse, a hive of activity where ships come and go.',
+      },
+    ],
+    investors: [
+      { name: "Gelon", loanAmount: 60, interestRate: 0.10 },
+      { name: "Hieron I", loanAmount: 110, interestRate: 0.16 },
     ],
   },
   {
@@ -74,22 +148,103 @@ let ports = [
     prices: { 'Olive Oil': 10, Wine: 7, Spices: 16, Food: 2, Water: 1 },
     npcs: ['Minos the Captain'],
     uniqueLocations: [
-      { name: 'Palace', description: 'The magnificent Palace of Knossos, a testament to Minoan civilization and power.' },
-      { name: 'Marketplace', description: 'The sprawling marketplace of Knossos, where traders from across Crete gather.' },
+      {
+        name: 'Palace',
+        description:
+          'The magnificent Palace of Knossos, a testament to Minoan civilization and power.',
+      },
+      {
+        name: 'Marketplace',
+        description:
+          'The sprawling marketplace of Knossos, where traders from across Crete gather.',
+      },
+    ],
+    investors: [
+      { name: "Minos", loanAmount: 70, interestRate: 0.11 },
+      { name: "Pasiphae", loanAmount: 130, interestRate: 0.16 },
     ],
   },
 ];
 
 //starting player components; add lore later
-let player = {
-  name: '',
+const player = {
+  name: 'Leonidas the Steadfast', 
+  backstory: `   Leonidas, son of Damon, a humble fisherman from the shores of Aegina, never dreamt of inheriting a trading fleet.\n   His father, a man of the sea, unexpectedly passed away, leaving Leonidas with three weathered ships, 100 drachmas, and a loyal crew of ten hardened sailors.\n   With a heavy heart but a determined spirit, Leonidas embarks on a journey to honor his father's memory and make his mark on the Aegean trade.\n   The weight of family responsibility now falls on his shoulders, and a successful business is the only way to provide for his family and ensure their survival \n   in these unpredictable times.`,
   drachmas: 100,
   fleet: 3,
   crew: 10,
   inventory: {},
   supplies: { food: 20, water: 20 },
   currentPort: 'Athens',
+  piety: 0, 
+  metSophia: false, 
+  loans: [], 
 };
+
+async function meetSophia() {
+  if (player.currentPort === 'Athens' && !player.metSophia) {
+    console.log(
+      chalk.cyan(
+        '\n   As you step onto the Athenian Agora, a woman with sharp eyes and shrewd demeanor approaches you.'
+      )
+    );
+    console.log(chalk.cyan('   It is Sophia, a renowned merchant.'));
+    await delay(1000);
+
+    console.log(
+      chalk.magenta(
+        '   "Welcome, Leonidas," she says, her voice low and steady. "I am Sophia, and I have watched your family for years. Your father, Damon, was a man of the sea, and \n   I know you will make your mark on trade.  But the Aegean is not kind to the unprepared. Allow me to assist." '
+      )
+    );
+    await delay(2000);
+
+    console.log(chalk.magenta('   "First, you can trade goods.  Visit the marketplace to buy or sell to other merchants and accumulate wealth."\n'));
+    await delay(2000);
+
+    console.log(chalk.magenta('   "Next, use your fleet to travel to other ports, but keep track of your supplies." \n'));
+    await delay(2000);
+
+    console.log(chalk.magenta('   "You can also explore unique locations in each port to learn about the region."\n'));
+    await delay(2000);
+
+    console.log(chalk.magenta('   "Remember, the Gods can be fickle. You can pray, but make sure to offer them gifts!"\n'));
+    await delay(2000);
+    player.metSophia = true;
+    saveGame();
+
+  }
+}
+
+const seasons = {
+  spring: { multiplier: 0.75 }, 
+  summer: { multiplier: 0.9 }, 
+  autumn: { multiplier: 1.0 }, 
+  winter: { multiplier: 1.5 }, 
+};
+
+function changeSeason() {
+  const seasonOrder = ['spring', 'summer', 'autumn', 'winter'];
+  const currentIndex = seasonOrder.indexOf(currentSeason);
+  const nextIndex = (currentIndex + 1) % seasonOrder.length;
+  currentSeason = seasonOrder[nextIndex];
+  console.log(`The season has changed to ${currentSeason}.`);
+}
+
+
+let currentSeason = 'autumn';
+
+function getSeasonalMultiplier(good) {
+  const agriculturalGoods = ['Wheat', 'Food']; 
+  return agriculturalGoods.includes(good) ? seasons[currentSeason].multiplier : 1;
+}
+
+function updateSeasonalPrices() {
+  for (const port of ports) {
+    for (const good in port.goods) {
+      port.prices[good] = Math.round(port.goods[good] * getSeasonalMultiplier(good));
+    }
+  }
+}
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -123,6 +278,10 @@ function loadGame() {
   }
 }
 
+function displaySeason() {
+  console.log(chalk.yellow(`\nThe season is now: ${currentSeason}\n`));
+}
+
 //landing page logic
 async function startGame() {
   const loadOption = await select({
@@ -146,20 +305,29 @@ async function startGame() {
 
 async function newGame() {
   intro(chalk.green('Welcome to Tradewinds!'));
-  player.name = await text({
-    message: 'What is your name, captain?',
-    validate: (value) => (value ? undefined : 'Please enter a name.'),
-  });
-
-  outro(
-    `Greetings, ${player.name}! You have inherited a small fleet and 100 drachmas. Your journey begins at ${player.currentPort}.`
-  );
-
+  await displayBackstory(player.backstory); 
+  await meetSophia();
   await mainMenu();
+}
+
+async function displayBackstory(backstory) {
+  const lines = backstory.split('\n'); 
+  for (const line of lines) {
+    const words = line.split(' ');
+    for (const word of words) {
+      process.stdout.write(`${word} `);
+      await delay(50); 
+    }
+    console.log(''); 
+  }
+  console.log(''); 
+  await delay(1000); 
 }
 
 //extremely unstable switchcase, port to better logic later
 async function mainMenu() {
+  updateSeasonalPrices(); 
+  displaySeason();
   const action = await multiselect({
     message: 'Choose your actions:',
     options: [
@@ -176,37 +344,48 @@ async function mainMenu() {
   });
 
   for (const act of action) {
-    switch (act) {
-      case 'trade':
-        await tradeGoods();
-        break;
-      case 'travel':
-        await travel();
-        break;
-      case 'marketplace':
-        await visitMarketplace();
-        break;
-      case 'locations':
-        await exploreLocations();
-        break;
-      case 'manage':
-        await manageCrew();
-        break;
-      case 'inventory':
-        await checkInventory();
-        break;
-      case 'pray':
-        await prayToGods();
-        break;
-      case 'save':
-        saveGame();
-        break;
+    try {
+        switch (act) {
+          case 'trade':
+            await tradeGoods();
+            break;
+          case 'travel':
+            await travel();
+            break;
+          case 'marketplace':
+            await visitMarketplace();
+            break;
+          case 'locations':
+            await exploreLocations();
+            break;
+          case 'manage':
+            await manageCrew();
+            break;
+          case 'inventory':
+            await checkInventory();
+            break;
+          case 'pray':
+            await prayToGods();
+            break;
+          case 'save':
+            saveGame();
+            break;
+        }
+    } catch (error) {
+        if (error.message.includes('aborted')) {
+            outro(chalk.yellow("Game exited."));
+            exit();
+        } else {
+            console.error(chalk.red("An unexpected error occurred:", error));
+            exit(); 
+        }
     }
   }
   await mainMenu();
 }
 
 async function tradeGoods() {
+  updateSeasonalPrices();
   const port = ports.find((p) => p.name === player.currentPort);
   console.log(chalk.yellow(`You are at ${player.currentPort}. Available goods:`));
 
@@ -222,20 +401,29 @@ async function tradeGoods() {
   if (buyOrSell === 'buy') {
     const goodToTrade = await select({
       message: 'What good would you like to buy?',
-      options: Object.keys(port.goods).map((good) => ({ value: good, label: good })),
+      options: Object.keys(port.goods)
+        .filter((good) => good !== 'Wheat' || player.currentPort !== 'Athens') 
+        .map((good) => ({ value: good, label: good })),
     });
-    const amount = await text({
-      message: `How much ${goodToTrade} do you want to buy?`,
-      validate: (value) => isNaN(value) || value <= 0 ? 'Please enter a valid amount.' : undefined,
-    });
-    const cost = port.prices[goodToTrade] * amount;
-    if (player.drachmas >= cost) {
-      player.drachmas -= cost;
-      player.inventory[goodToTrade] = (player.inventory[goodToTrade] || 0) + parseInt(amount);
-      outro(`You bought ${amount} ${goodToTrade} for ${cost} drachmas.`);
+
+    if (goodToTrade) { 
+      const amount = await text({
+        message: `How much ${goodToTrade} do you want to buy?`,
+        validate: (value) =>
+          isNaN(value) || value <= 0 ? 'Please enter a valid amount.' : undefined,
+      });
+      const cost = port.prices[goodToTrade] * amount;
+      if (player.drachmas >= cost) {
+        player.drachmas -= cost;
+        player.inventory[goodToTrade] = (player.inventory[goodToTrade] || 0) + parseInt(amount);
+        outro(`You bought ${amount} ${goodToTrade} for ${cost} drachmas.`);
+      } else {
+        outro(chalk.red('You do not have enough drachmas.'));
+      }
     } else {
-      outro(chalk.red('You do not have enough drachmas.'));
+      outro(chalk.red('You cannot buy anything here.'));
     }
+
   } else { 
     const goodToTrade = await select({
       message: 'What good would you like to sell?',
@@ -262,7 +450,7 @@ async function visitMarketplace() {
   console.log('You see the following people:');
 
   port.npcs.forEach((npc, index) => {
-    console.log(`${index + 1}. ${npc}`);
+    console.log(`${index + 1}. ${npc.name}`);
   });
 
   const npcChoice = await text({
@@ -276,8 +464,8 @@ async function visitMarketplace() {
   const npcIndex = parseInt(npcChoice) - 1;
 
   if (npcIndex >= 0 && npcIndex < port.npcs.length) {
-    console.log(chalk.magenta(`You talk to ${port.npcs[npcIndex]}.`));
-    console.log('They share stories of distant lands, rare goods, and dangerous waters.');
+    console.log(chalk.magenta(`You talk to ${port.npcs[npcIndex].name}.`));
+    console.log(chalk.magenta(`${port.npcs[npcIndex].quote}`)); 
   } else {
     console.log(chalk.red('Invalid choice.'));
   }
@@ -333,15 +521,17 @@ const distanceMatrix = {
     player.currentPort = destination;
     handleRandomEvents();
     handleStarvation();
+    handleLoans();
     travelSpinner.stop(chalk.green(`You have arrived at ${destination}.`));
 
   handleStarvation(); 
+  displaySeason();
 }
 
 //fix this horrendous nesting later 
 function handleStarvation() {
-  const baseMutinyChance = 0.5; // Base chance of mutiny
-  const mutinyChance = Math.max(0, baseMutinyChance - (0.1 * (player.piety || 0))); // Reduce mutiny chance with piety
+  const baseMutinyChance = 0.5; 
+  const mutinyChance = Math.max(0, baseMutinyChance - (0.1 * (player.piety || 0))); 
 
   if (player.supplies.food <= 0 || player.supplies.water <= 0) {
     const starvationEvents = [
@@ -351,7 +541,6 @@ function handleStarvation() {
     ];
     const event = starvationEvents[Math.floor(Math.random() * starvationEvents.length)];
 
-    //Mutiny Chance
     if (event.includes('mutinies') && Math.random() < mutinyChance) {
       player.crew = 0;
       console.log(chalk.red("You have been overthrown! You are now standed at sea."));
@@ -360,8 +549,8 @@ function handleStarvation() {
       player.crew = Math.max(0, Math.floor(player.crew / 2));
     } else if (event.includes('drift ashore')) {
       console.log(chalk.yellow("You've drifted ashore, weak and depleted. Your journey continues, but you've lost some time and goods."));
-      player.drachmas -= 20;
-      player.crew -= 2;
+      player.drachmas -= 20; 
+      player.crew -= 2; 
     } else {
       console.log(chalk.red("Game Over"));
       process.exit();
@@ -371,8 +560,11 @@ function handleStarvation() {
 
 function handleRandomEvents() {
   const eventChance = Math.random();
+  const baseEventChance = 0.3;
+  const pietyModifier = 0.2 * (player.piety || 0);
+  const modifiedEventChance = Math.max(0, baseEventChance - pietyModifier); 
 
-  if (eventChance < 0.3 - (0.2 * (player.piety || 0))) { // Incorporate piety for reduced chance
+  if (eventChance < modifiedEventChance) {
     const events = [
       'A storm damages one of your ships.',
       'Pirates raid your fleet and steal some goods.',
@@ -388,7 +580,7 @@ function handleRandomEvents() {
 
 async function prayToGods() {
   if (player.supplies.food > 0) {
-    player.supplies.food--; // Consume one food unit when praying
+    player.supplies.food--; 
     player.piety = (player.piety || 0) + 1;
     const pietyLevel = player.piety;
     const luckModifier = 0.2 * pietyLevel;
@@ -422,5 +614,41 @@ async function checkInventory() {
   }
   await text({ message: 'Press Enter to continue' });
 }
+
+function handleLoans() {
+  if (player.loans && player.loans.length > 0) {
+    for (let i = 0; i < player.loans.length; i++) {
+      const loan = player.loans[i];
+      const interest = loan.amount * loan.interestRate;
+      const totalOwed = loan.amount + interest;
+
+      if (player.drachmas >= totalOwed) {
+        player.drachmas -= totalOwed;
+        player.loans.splice(i, 1);
+        console.log(`You paid back ${totalOwed} drachmas to ${loan.investor}.`);
+        i--;
+      } else {
+        if (player.fleet > 1) {
+          console.log(
+            chalk.red(`You did not pay back loan from ${loan.investor}! You lost a ship!`)
+          );
+          player.fleet--;
+          player.loans.splice(i, 1);
+          i--;
+          console.log(`You now have ${player.fleet} ships left.`);
+        } else {
+          console.log(
+            chalk.red(
+              `You did not pay back loan from ${loan.investor}! All your ships have been seized! Game Over.`
+            )
+          );
+          process.exit();
+        }
+      }
+    }
+  }
+}
+
+changeSeason();
 
 startGame();
