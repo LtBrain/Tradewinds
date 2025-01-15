@@ -1,160 +1,322 @@
 {
   "player": {
-    "name": "ltbrain",
-    "drachmas": 95,
+    "name": "Leonidas the Steadfast",
+    "backstory": "   Leonidas, son of Damon, a humble fisherman from the shores of Aegina, never dreamt of inheriting a trading fleet.\n   His father, a man of the sea, unexpectedly passed away, leaving Leonidas with three weathered ships, 100 drachmas, and a loyal crew of ten hardened sailors.\n   With a heavy heart but a determined spirit, Leonidas embarks on a journey to honor his father's memory and make his mark on the Aegean trade.\n   The weight of family responsibility now falls on his shoulders, and a successful business is the only way to provide for his family and ensure their survival \n   in these unpredictable times.",
+    "drachmas": 100,
     "fleet": 3,
     "crew": 10,
-    "inventory": {
-      "wheat": 1
-    },
+    "inventory": {},
     "supplies": {
       "food": 20,
       "water": 20
     },
-    "currentPort": "Athens"
+    "currentPort": "Athens",
+    "piety": 0,
+    "metSophia": true,
+    "loans": []
   },
   "ports": [
     {
       "name": "Athens",
       "goods": {
-        "wheat": 5,
-        "oliveOil": 10,
-        "wine": 8,
-        "pottery": 6
+        "Wheat": 10,
+        "Olive Oil": 10,
+        "Wine": 8,
+        "Pottery": 6,
+        "Food": 2,
+        "Water": 1
       },
       "prices": {
-        "wheat": 5,
-        "oliveOil": 10,
-        "wine": 8,
-        "pottery": 6
+        "Wheat": 10,
+        "Olive Oil": 10,
+        "Wine": 8,
+        "Pottery": 6,
+        "Food": 2,
+        "Water": 1
       },
       "npcs": [
-        "Sophia the Merchant",
-        "Nikolas the Philosopher"
+        {
+          "name": "Sophia the Merchant",
+          "quote": "“They share stories of adventures and exploration."
+        },
+        {
+          "name": "Nikolas the Philosopher",
+          "quote": "“They share stories of adventures and exploration."
+        }
       ],
       "uniqueLocations": [
-        "Agora",
-        "Temple of Athena"
+        {
+          "name": "Agora",
+          "description": "The bustling marketplace of Athens, the heart of Athenian trade and commerce."
+        },
+        {
+          "name": "Temple of Athena",
+          "description": "The magnificent Temple of Athena, where offerings are made and fortunes can be told."
+        }
+      ],
+      "investors": [
+        {
+          "name": "Damon the Wise",
+          "loanAmount": 50,
+          "interestRate": 0.1
+        },
+        {
+          "name": "Kleitos the Bold",
+          "loanAmount": 100,
+          "interestRate": 0.15
+        }
       ]
     },
     {
       "name": "Carthage",
       "goods": {
-        "spices": 15,
-        "textiles": 12,
-        "metals": 20
+        "Spices": 15,
+        "Textiles": 12,
+        "Metals": 20,
+        "Food": 2,
+        "Water": 1
       },
       "prices": {
-        "spices": 15,
-        "textiles": 12,
-        "metals": 20
+        "Spices": 15,
+        "Textiles": 12,
+        "Metals": 20,
+        "Food": 2,
+        "Water": 1
       },
       "npcs": [
         "Hanno the Navigator"
       ],
       "uniqueLocations": [
-        "Bazaar",
-        "Harbor"
+        {
+          "name": "Bazaar",
+          "description": "A vibrant marketplace filled with exotic goods from across the Mediterranean."
+        },
+        {
+          "name": "Harbor",
+          "description": "The bustling harbor of Carthage, where ships arrive and depart daily."
+        }
+      ],
+      "investors": [
+        {
+          "name": "Hamilcar Barca",
+          "loanAmount": 75,
+          "interestRate": 0.12
+        },
+        {
+          "name": "Magon Barca",
+          "loanAmount": 150,
+          "interestRate": 0.18
+        }
       ]
     },
     {
       "name": "Alexandria",
       "goods": {
-        "wheat": 7,
-        "oliveOil": 9,
-        "spices": 18
+        "Wheat": 7,
+        "Olive Oil": 9,
+        "Spices": 18,
+        "Food": 2,
+        "Water": 1
       },
       "prices": {
-        "wheat": 7,
-        "oliveOil": 9,
-        "spices": 18
+        "Wheat": 7,
+        "Olive Oil": 9,
+        "Spices": 18,
+        "Food": 2,
+        "Water": 1
       },
       "npcs": [
         "Cleon the Scholar"
       ],
       "uniqueLocations": [
-        "Library",
-        "Lighthouse"
+        {
+          "name": "Library",
+          "description": "The legendary Library of Alexandria, where knowledge is power."
+        },
+        {
+          "name": "Lighthouse",
+          "description": "The towering Lighthouse of Alexandria, guiding ships safely to port."
+        }
+      ],
+      "investors": [
+        {
+          "name": "Sostratus of Cnidos",
+          "loanAmount": 100,
+          "interestRate": 0.15
+        },
+        {
+          "name": "Philo",
+          "loanAmount": 200,
+          "interestRate": 0.2
+        }
       ]
     },
     {
       "name": "Tyre",
       "goods": {
-        "textiles": 14,
-        "pottery": 6,
-        "wine": 10
+        "Textiles": 14,
+        "Pottery": 6,
+        "Wine": 10,
+        "Food": 2,
+        "Water": 1
       },
       "prices": {
-        "textiles": 14,
-        "pottery": 6,
-        "wine": 10
+        "Textiles": 14,
+        "Pottery": 6,
+        "Wine": 10,
+        "Food": 2,
+        "Water": 1
       },
       "npcs": [
         "Phoenicia the Trader"
       ],
       "uniqueLocations": [
-        "Dye Works",
-        "Market Square"
+        {
+          "name": "Dye Works",
+          "description": "The vibrant dye works of Tyre, producing the finest purple dye in the known world."
+        },
+        {
+          "name": "Market Square",
+          "description": "A large open-air market filled with the sounds and smells of Tyre."
+        }
+      ],
+      "investors": [
+        {
+          "name": "Ethbaal II",
+          "loanAmount": 80,
+          "interestRate": 0.13
+        },
+        {
+          "name": "Pygmalion",
+          "loanAmount": 120,
+          "interestRate": 0.17
+        }
       ]
     },
     {
       "name": "Rhodes",
       "goods": {
-        "metals": 17,
-        "oliveOil": 11,
-        "wine": 9
+        "Metals": 17,
+        "Olive Oil": 11,
+        "Wine": 9,
+        "Food": 2,
+        "Water": 1
       },
       "prices": {
-        "metals": 17,
-        "oliveOil": 11,
-        "wine": 9
+        "Metals": 17,
+        "Olive Oil": 11,
+        "Wine": 9,
+        "Food": 2,
+        "Water": 1
       },
       "npcs": [
         "Artemis the Shipwright"
       ],
       "uniqueLocations": [
-        "Shipyard",
-        "Colossus Viewpoint"
+        {
+          "name": "Shipyard",
+          "description": "The busy shipyard of Rhodes, home to skilled shipwrights and the latest in shipbuilding technology."
+        },
+        {
+          "name": "Colossus Viewpoint",
+          "description": "A breathtaking viewpoint offering stunning views of the Colossus of Rhodes."
+        }
+      ],
+      "investors": [
+        {
+          "name": "Dorieus",
+          "loanAmount": 90,
+          "interestRate": 0.14
+        },
+        {
+          "name": "Diagoras",
+          "loanAmount": 180,
+          "interestRate": 0.19
+        }
       ]
     },
     {
       "name": "Syracuse",
       "goods": {
-        "pottery": 5,
-        "wheat": 6,
-        "oliveOil": 8
+        "Pottery": 5,
+        "Wheat": 6,
+        "Olive Oil": 8,
+        "Food": 2,
+        "Water": 1
       },
       "prices": {
-        "pottery": 5,
-        "wheat": 6,
-        "oliveOil": 8
+        "Pottery": 5,
+        "Wheat": 6,
+        "Olive Oil": 8,
+        "Food": 2,
+        "Water": 1
       },
       "npcs": [
         "Dionysius the Guard"
       ],
       "uniqueLocations": [
-        "Fortress",
-        "Dock"
+        {
+          "name": "Fortress",
+          "description": "A mighty fortress overlooking the city of Syracuse, offering a glimpse into its military might."
+        },
+        {
+          "name": "Dock",
+          "description": "The docks of Syracuse, a hive of activity where ships come and go."
+        }
+      ],
+      "investors": [
+        {
+          "name": "Gelon",
+          "loanAmount": 60,
+          "interestRate": 0.1
+        },
+        {
+          "name": "Hieron I",
+          "loanAmount": 110,
+          "interestRate": 0.16
+        }
       ]
     },
     {
       "name": "Knossos",
       "goods": {
-        "oliveOil": 10,
-        "wine": 7,
-        "spices": 16
+        "Olive Oil": 10,
+        "Wine": 7,
+        "Spices": 16,
+        "Food": 2,
+        "Water": 1
       },
       "prices": {
-        "oliveOil": 10,
-        "wine": 7,
-        "spices": 16
+        "Olive Oil": 10,
+        "Wine": 7,
+        "Spices": 16,
+        "Food": 2,
+        "Water": 1
       },
       "npcs": [
         "Minos the Captain"
       ],
       "uniqueLocations": [
-        "Palace",
-        "Marketplace"
+        {
+          "name": "Palace",
+          "description": "The magnificent Palace of Knossos, a testament to Minoan civilization and power."
+        },
+        {
+          "name": "Marketplace",
+          "description": "The sprawling marketplace of Knossos, where traders from across Crete gather."
+        }
+      ],
+      "investors": [
+        {
+          "name": "Minos",
+          "loanAmount": 70,
+          "interestRate": 0.11
+        },
+        {
+          "name": "Pasiphae",
+          "loanAmount": 130,
+          "interestRate": 0.16
+        }
       ]
     }
   ]
